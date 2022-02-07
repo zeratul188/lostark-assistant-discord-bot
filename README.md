@@ -11,3 +11,11 @@ npm start
 ```zsh
 discord.js
 ```
+
+# config.json
+```zsh
+{
+    "token": "discord bot token",
+    "prefix": "!"
+}
+```
