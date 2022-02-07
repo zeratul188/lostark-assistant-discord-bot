@@ -19,3 +19,9 @@ discord.js
     "prefix": "!"
 }
 ```
+
+# channel-ids.json
+```zsh
+    "confirm": "인증 ID",
+    "edit": "정보수정 이름"
+```
