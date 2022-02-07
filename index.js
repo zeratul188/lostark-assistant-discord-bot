@@ -1,7 +1,9 @@
 const { Client, Intents } = require('discord.js');
-const { token, prefix } = require('./config.json');
+//const { token, prefix } = require('./config.json');
 const { confirm, edit } = require('./channel-ids.json');
 const { jobs, servers } = require('./datas.json');
+
+const prefix = '!';
 
 const client = new Client({ intents: [
     Intents.FLAGS.GUILDS,
