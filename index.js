@@ -3,7 +3,7 @@ const { confirm, edit } = require('./channel-ids.json');
 const { jobs, servers } = require('./datas.json');
 const colors = require('./colors.json');
 
-const { token } = require('./config.json'); //테스트용
+//const { token } = require('./config.json'); //테스트용
 
 const prefix = '!';
 
