@@ -173,7 +173,7 @@ client.on('message', async message => {
 
 
 //테스트용
-client.login(token);
+//client.login(token);
 
 //Heroku 전용
-//client.login(process.env.TOKEN);
+client.login(process.env.TOKEN);
