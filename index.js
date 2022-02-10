@@ -1,7 +1,9 @@
-const { Client, Intents } = require('discord.js');
-//const { token, prefix } = require('./config.json');
+const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, ButtonInteraction, MessageComponentInteraction } = require('discord.js');
 const { confirm, edit } = require('./channel-ids.json');
 const { jobs, servers } = require('./datas.json');
+const colors = require('./colors.json');
+
+const { token } = require('./config.json'); //테스트용
 
 const prefix = '!';
 
@@ -12,12 +14,13 @@ const client = new Client({ intents: [
     Intents.FLAGS.GUILD_MEMBERS,
     Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS
 ] });
+
 client.once('ready', () => {
     console.log("LAA Bot is ready!");
     console.log('Prefix : '+prefix);
 });
 
-client.on('message', message => {
+client.on('message', async message => {
     if (message.channelId === confirm) {
         var contents = message.content.split(' ');
         if (contents[0] === prefix+'역할부여') {
@@ -73,8 +76,104 @@ client.on('message', message => {
             }
         }
         message.delete();
+    } else {
+        if (message.content.split(' ')[0] === prefix+'정보') {
+            var roleList = '';
+            var jobList = '';
+            for (let i = 0; i < message.member.roles.cache.size-1; i++) {
+                if (jobs.indexOf(message.member.roles.cache.at(i).name) !== -1) {
+                    jobList += message.member.roles.cache.at(i).name+'\n';
+                } else {
+                    roleList += message.member.roles.cache.at(i).name+'\n';
+                }
+            }
+
+            const informationEmbed = new MessageEmbed()
+                .setColor(colors.keycard)
+                .setTitle(message.member.nickname)
+                .setThumbnail(message.author.avatarURL())
+                .addFields(
+                    { name: '본인 역할', value: roleList, inline: true},
+                    { name: '클래스', value: jobList, inline: true}
+                )
+                .setFooter({
+                    text: 'Lostark Assistant',
+                    iconURL: 'https://cdn.discordapp.com/attachments/941186050741649489/941186087672500284/app_icon.png'
+                });
+
+            message.reply({
+                ephemeral: true,
+                embeds: [informationEmbed]
+            });
+        } else if (message.content.split(' ')[0] === prefix+'도움') {
+
+            const row = new MessageActionRow()
+			.addComponents(
+				new MessageButton()
+					.setCustomId('btnEdit')
+					.setLabel('✎-정보수정 가기')
+					.setStyle('SECONDARY')
+			);
+
+            const helpEmbed = new MessageEmbed()
+                .setColor(colors.keycard)
+                .setTitle('LAA Bot 명령어')
+                .setDescription('LAA Bot의 명령어들의 사용법을 확인하실 수 있습니다.')
+                .setThumbnail('https://cdn.discordapp.com/attachments/941186050741649489/941186087672500284/app_icon.png')
+                .addFields(
+                    { name: '!도움', value: 'LAA Bot의 명령어 목록을 확인합니다.' },
+                    { name: '!정보', value: '나의 정보를 출력합니다. (별명, 직업, 본인 역할)' },
+                    { name: '!역할부여', value: '*\'__👌-사용자-인증__\' 채널에서만 사용가능*\n디스코드 가입시 사용자 인증을 합니다.' },
+                    { name: '!수정', value: '*\'__✎-정보수정__\' 채널에서만 사용 가능*\n본인의 별명, 서버, 클래스를 변경할 때 사용합니다.' }
+                )
+                .setFooter({
+                    text: 'Lostark Assistant',
+                    iconURL: 'https://cdn.discordapp.com/attachments/941186050741649489/941186087672500284/app_icon.png'
+                });
+
+            message.reply({
+                embeds: [helpEmbed],
+                components: [row],
+                ephemeral: true
+            });
+
+            const filter = (btnInt) => {
+                return message.member.id === btnInt.user.id;
+            }
+
+            const collector = message.channel.createMessageComponentCollector({
+                filter,
+                max: 1,
+                time: 1000 * 15
+            })
+
+            collector.on('collect', (i) => {
+                i.reply({
+                    content: '\'__✎-정보수정__\' 페이지로 이동합니다.',
+                    ephemeral: true
+                })
+            })
+
+            collector.on('end', async (collection) => {
+                /*collection.forEach((click) => {
+                    console.log(click.user.id, click.customId)
+                })*/
+
+                if (collection.first()?.customId === 'btnEdit') {
+                    // edit the target channel position
+                    console.log('helloworld');
+                    collection.first()?.setDisable(true);
+                }
+
+                
+            })
+        }
     }
 });
 
-//client.login(token);
-client.login(process.env.TOKEN);
+
+//테스트용
+client.login(token);
+
+//Heroku 전용
+//client.login(process.env.TOKEN);
