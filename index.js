@@ -1,9 +1,9 @@
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, ButtonInteraction, MessageComponentInteraction } = require('discord.js');
 const { confirm, edit } = require('./channel-ids.json');
-const { jobs, servers } = require('./datas.json');
+const { jobs, servers, job_emojis } = require('./datas.json');
 const colors = require('./colors.json');
 
-const { token } = require('./config.json'); //테스트용
+//const { token } = require('./config.json'); //테스트용
 
 const prefix = '!';
 
@@ -13,17 +13,25 @@ const client = new Client({ intents: [
     Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
     Intents.FLAGS.GUILD_MEMBERS,
     Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS
-] });
+    ],
+    partials: ['MESSAGE', 'CHANNEL', 'REACTION']
+});
 
-client.on('messageReactionAdd', (message, user) => {
-    if (message.channelId === confirm) {
+/*
+client.on('messageReactionAdd', async (reaction, user) => {
+    console.log(`emoji : ${reaction.emoji.name}`);
+    console.log(`Message Channel : ${reaction.message.channelId}\nConfirm Channel : ${confirm}`);
+    if (reaction.message.channelId === confirm) {
         
     }
-})
+});
+*/
+
+//client.on('messageReactionRemove', )
 
 client.once('ready', () => {
     console.log("LAA Bot is ready!");
-    console.log('Prefix : '+prefix);
+    console.log(`Prefix : ${prefix}`);
 });
 
 client.on('message', async message => {
@@ -74,11 +82,14 @@ client.on('message', async message => {
                     const job_role = message.guild.roles.cache.find(role => role.name === job);
                     message.member.roles.add(job_role);
                     const new_nickname = nickname+'/'+server;
-                    message.member.setNickname(new_nickname);
                     client.users.cache.get(message.author.id).send('정보를 변경하였습니다.');
                 }
             } else {
-                client.users.cache.get(message.author.id).send('입력하지 않은 부분이 있거나 입력할 항목 갯수를 초과하였습니다. 다시 양식에 맞게 입력해주시기 바랍니다.');
+                message.reply({
+                    content: '입력하지 않은 부분이 있거나 입력할 항목 갯수를 초과하였습니다. 다시 양식에 맞게 입력해주시기 바랍니다.',
+                    ephemeral: true
+                });
+                //client.users.cache.get(message.author.id).send('입력하지 않은 부분이 있거나 입력할 항목 갯수를 초과하였습니다. 다시 양식에 맞게 입력해주시기 바랍니다.');
             }
         }
         message.delete();
@@ -115,11 +126,11 @@ client.on('message', async message => {
 
             const row = new MessageActionRow()
 			.addComponents(
-				new MessageButton()
-					.setCustomId('btnEdit')
-					.setLabel('✎-정보수정 가기')
-					.setStyle('SECONDARY')
-			);
+                new MessageButton()
+					.setLabel('로스트아크 어시스턴트 앱')
+					.setStyle('LINK')
+                    .setURL('https://play.google.com/store/apps/details?id=com.lostark.lostarkapplication')
+            );
 
             const helpEmbed = new MessageEmbed()
                 .setColor(colors.keycard)
@@ -130,7 +141,7 @@ client.on('message', async message => {
                     { name: '!도움', value: 'LAA Bot의 명령어 목록을 확인합니다.' },
                     { name: '!정보', value: '나의 정보를 출력합니다. (별명, 직업, 본인 역할)' },
                     { name: '!역할부여', value: '*\'__👌-사용자-인증__\' 채널에서만 사용가능*\n디스코드 가입시 사용자 인증을 합니다.' },
-                    { name: '!수정', value: '*\'__✎-정보수정__\' 채널에서만 사용 가능*\n본인의 별명, 서버, 클래스를 변경할 때 사용합니다.' }
+                    { name: '!수정', value: '*\'__#✎-정보수정__\' 채널에서만 사용 가능*\n본인의 별명, 서버, 클래스를 변경할 때 사용합니다.' }
                 )
                 .setFooter({
                     text: 'Lostark Assistant',
@@ -155,7 +166,7 @@ client.on('message', async message => {
 
             collector.on('collect', (i) => {
                 i.reply({
-                    content: '\'__✎-정보수정__\' 페이지로 이동합니다.',
+                    content: '로스트아크 어시스턴트 플레이스토어 엽니다.',
                     ephemeral: true
                 })
             })
@@ -167,11 +178,8 @@ client.on('message', async message => {
 
                 if (collection.first()?.customId === 'btnEdit') {
                     // edit the target channel position
-                    console.log('helloworld');
-                    collection.first()?.setDisable(true);
+                    
                 }
-
-                
             })
         }
     }
@@ -179,7 +187,7 @@ client.on('message', async message => {
 
 
 //테스트용
-client.login(token);
+//client.login(token);
 
 //Heroku 전용
-//client.login(process.env.TOKEN);
+client.login(process.env.TOKEN);
