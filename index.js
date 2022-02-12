@@ -82,14 +82,11 @@ client.on('message', async message => {
                     const job_role = message.guild.roles.cache.find(role => role.name === job);
                     message.member.roles.add(job_role);
                     const new_nickname = nickname+'/'+server;
+                    message.member.setNickname(new_nickname);
                     client.users.cache.get(message.author.id).send('정보를 변경하였습니다.');
                 }
             } else {
-                message.reply({
-                    content: '입력하지 않은 부분이 있거나 입력할 항목 갯수를 초과하였습니다. 다시 양식에 맞게 입력해주시기 바랍니다.',
-                    ephemeral: true
-                });
-                //client.users.cache.get(message.author.id).send('입력하지 않은 부분이 있거나 입력할 항목 갯수를 초과하였습니다. 다시 양식에 맞게 입력해주시기 바랍니다.');
+                client.users.cache.get(message.author.id).send('입력하지 않은 부분이 있거나 입력할 항목 갯수를 초과하였습니다. 다시 양식에 맞게 입력해주시기 바랍니다.');
             }
         }
         message.delete();
