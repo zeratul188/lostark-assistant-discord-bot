@@ -3,7 +3,7 @@ const { confirm, edit } = require('./channel-ids.json');
 const { jobs, servers } = require('./datas.json');
 const colors = require('./colors.json');
 
-//const { token } = require('./config.json'); //테스트용
+const { token } = require('./config.json'); //테스트용
 
 const prefix = '!';
 
@@ -14,6 +14,12 @@ const client = new Client({ intents: [
     Intents.FLAGS.GUILD_MEMBERS,
     Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS
 ] });
+
+client.on('messageReactionAdd', (message, user) => {
+    if (message.channelId === confirm) {
+        
+    }
+})
 
 client.once('ready', () => {
     console.log("LAA Bot is ready!");
@@ -173,7 +179,7 @@ client.on('message', async message => {
 
 
 //테스트용
-//client.login(token);
+client.login(token);
 
 //Heroku 전용
-client.login(process.env.TOKEN);
+//client.login(process.env.TOKEN);
