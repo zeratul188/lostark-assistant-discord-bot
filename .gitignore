@@ -12,6 +12,10 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 # Included token by config.json
 config.json
 
+# no Included and so on files
+discord-boards.md
+app-updates.md
+
 # Runtime data
 pids
 *.pid
