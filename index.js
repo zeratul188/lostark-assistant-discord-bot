@@ -3,7 +3,7 @@ const { confirm, edit } = require('./channel-ids.json');
 const { jobs, servers, job_emojis } = require('./datas.json');
 const colors = require('./colors.json');
 
-const { token } = require('./config.json'); //테스트용
+//const { token } = require('./config.json'); //테스트용
 
 const prefix = '!';
 
@@ -408,7 +408,7 @@ client.on('message', async message => {
 
 
 //테스트용
-client.login(token);
+//client.login(token);
 
 //Heroku 전용
-//client.login(process.env.TOKEN);
+client.login(process.env.TOKEN);
