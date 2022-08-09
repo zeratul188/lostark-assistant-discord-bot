@@ -219,7 +219,11 @@ function createJob(clone) {
         new MessageButton()
             .setLabel('도화가')
             .setStyle('SECONDARY')
-            .setCustomId('btnJob22')
+            .setCustomId('btnJob22'),
+        new MessageButton()
+            .setLabel('기상술사')
+            .setStyle('SECONDARY')
+            .setCustomId('btnJob23')
     );
 
     clone.send({
@@ -233,7 +237,7 @@ function createJob(clone) {
 
     const filter = i => {
         var result = false;
-        for (let index = 0; index < 22; index++) {
+        for (let index = 0; index < 23; index++) {
             if (i.customId === 'btnJob'+(index+1)) {
                 result = true;
                 break;
@@ -249,7 +253,7 @@ function createJob(clone) {
     collector.on('collect', async i => {
         var undo_job = 'none';
         var job = 'none';
-        for (let index = 0; index < 22; index++) {
+        for (let index = 0; index < 23; index++) {
             if (i.customId === 'btnJob'+(index+1)) {
                 var isDouble = false;
                 job = jobs[index];
@@ -293,12 +297,17 @@ function processJob() {
     channel.delete();
 }
 
+function sendStatue(content) {
+    client.channels.cache.get('954208962008477726').send(content);
+}
+
 client.once('ready', () => {
     console.log("LAA Bot is ready!");
     console.log(`Prefix : ${prefix}`);
 
     processCertification();
     processJob();
+    sendStatue('LAA 봇이 재시작되었습니다.');
 });
 
 client.on('message', async message => {
